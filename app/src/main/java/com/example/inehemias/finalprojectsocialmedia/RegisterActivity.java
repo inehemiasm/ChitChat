@@ -1,5 +1,6 @@
 package com.example.inehemias.finalprojectsocialmedia;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -22,6 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText Useremail, Userpassword, confirmation;
     private Button register;
     private FirebaseAuth mAuth;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +33,10 @@ public class RegisterActivity extends AppCompatActivity {
         Userpassword=findViewById(R.id.password_edit);
         confirmation= findViewById(R.id.confirm_password);
         register= findViewById(R.id.register_button);
+        progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,17 +55,17 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(currentUser != null)
         {
-           // SendUserToMainActivity();
+            SendUserToMainActivity();
         }
     }
-//
-//    private void SendUserToMainActivity() {
-//        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-//        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(mainIntent);
-//        finish();
-//
-//    }
+
+    private void SendUserToMainActivity() {
+        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
+        finish();
+
+    }
 
     private void CreateAcoount() {
 
@@ -87,6 +91,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         else {
+            progressDialog.setTitle("Creating Account");
+            progressDialog.setMessage("Please wait...");
+            progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(true);
             Toast.makeText(RegisterActivity.this, "Creating Account", Toast.LENGTH_LONG).show();
 
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -94,13 +102,17 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if(task.isSuccessful()){
+                        SendUserToSetupActivity();
+
                         Toast.makeText(RegisterActivity.this, "Account Created", Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
 
                     }
                     else {
 
                         String message = task.getException().getMessage();
                         Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
                     }
 
                 }
@@ -108,6 +120,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
+    }
+    private void SendUserToSetupActivity()
+    {
+        Intent setupIntent = new Intent(RegisterActivity.this, CreateProfile.class);
+        setupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(setupIntent);
+        finish();
     }
 
 

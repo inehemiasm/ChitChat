@@ -17,6 +17,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 }
@@ -33,6 +34,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

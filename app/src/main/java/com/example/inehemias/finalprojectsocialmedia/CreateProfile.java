@@ -8,12 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,8 +27,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-//import com.theartofdev.edmodo.cropper.CropImage;
-//import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateProfile extends AppCompatActivity {
+    private String TAG = "Profile Activity";
 
     private EditText UserName, FullName, CountryName;
     private Button save;
@@ -91,7 +93,7 @@ public class CreateProfile extends AppCompatActivity {
                 {
                     if (dataSnapshot.hasChild("profileimage"))
                     {
-                        String image = dataSnapshot.child("profileimage").getValue().toString();
+                        String image =  dataSnapshot.child("profileimage").getValue().toString();
                         Picasso.with(CreateProfile.this).load(image).placeholder(R.drawable.profile).into(ProfImage);
                     }
                     else
@@ -111,84 +113,127 @@ public class CreateProfile extends AppCompatActivity {
 
     }
 
-//    public void pickImage() {
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("image/*");
-//        startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+//    {
 //        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
-//            if (data == null) {
-//                //Display an error
-//                return;
+//
+//        if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null)
+//        {
+//            Uri ImageUri = data.getData();
+//                loadingBar.setTitle("Profile Image");
+//                loadingBar.setMessage("Please wait, while we updating your profile image...");
+//                loadingBar.show();
+//                loadingBar.setCanceledOnTouchOutside(true);
+//
+//           // Uri resultUri = result.getUri();
+//
+////            StorageReference filePath = userProfileImageRef.child(currentUserID + ".jpg");
+////
+//            assert ImageUri != null;
+//            final Uri resultUri = ImageUri;
+//
+//                StorageReference filePath = UserProfileImageRef.child(currentUserID + ".jpg");
+//
+//                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task)
+//
+//                    {
+//                        if(task.isSuccessful())
+//                        {
+//                            Toast.makeText(CreateProfile.this, "Profile Image stored successfully to Firebase storage...", Toast.LENGTH_SHORT).show();
+//
+//                            final String downloadUrl1 = task.getResult().getMetadata().getPath();
+//                            //final String downloadUrl = UserProfileImageRef.getDownloadUrl().toString();
+//                            Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
+//
+//
+//                            UsersRef.child("profileimage").setValue(result)
+//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task)
+//                                        {
+//                                            if(task.isSuccessful())
+//                                            {
+//                                                Intent selfIntent = new Intent(CreateProfile.this, CreateProfile.class);
+//                                                startActivity(selfIntent);
+//
+//                                                Toast.makeText(CreateProfile.this, "Profile Image stored to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
+//                                                loadingBar.dismiss();
+//                                            }
+//                                            else
+//                                            {
+//                                                String message = task.getException().getMessage();
+//                                                Toast.makeText(CreateProfile.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
+//                                                loadingBar.dismiss();
+//                                            }
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                });
 //            }
-//            InputStream inputStream = context.getContentResolver().openInputStream(data.getData());
-//            //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
 //        }
-//    }
-        @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null)
-        {
-            Uri ImageUri = data.getData();
+        if(requestCode == Gallery_Pick && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+
 
                 loadingBar.setTitle("Profile Image");
-                loadingBar.setMessage("Please wait, while we updating your profile image...");
+                loadingBar.setMessage("Please Wait...");
                 loadingBar.show();
                 loadingBar.setCanceledOnTouchOutside(true);
-
-            assert ImageUri != null;
-            Uri resultUri = ImageUri;
-
                 StorageReference filePath = UserProfileImageRef.child(currentUserID + ".jpg");
 
-                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                filePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task)
-                    {
-                        if(task.isSuccessful())
-                        {
-                            Toast.makeText(CreateProfile.this, "Profile Image stored successfully to Firebase storage...", Toast.LENGTH_SHORT).show();
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if(task.isSuccessful()) {
 
-                            final Task<Uri> downloadUrl = UserProfileImageRef.getDownloadUrl();
+                            Toast.makeText(CreateProfile.this, "Success!", Toast.LENGTH_SHORT).show();
 
-                            UsersRef.child("profileimage").setValue(downloadUrl)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task)
-                                        {
-                                            if(task.isSuccessful())
-                                            {
-                                                Intent selfIntent = new Intent(CreateProfile.this, CreateProfile.class);
-                                                startActivity(selfIntent);
+                            Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
 
-                                                Toast.makeText(CreateProfile.this, "Profile Image stored to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
-                                            else
-                                            {
-                                                String message = task.getException().getMessage();
-                                                Toast.makeText(CreateProfile.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
-                                        }
-                                    });
+                            result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    final String downloadUrl = uri.toString();
+
+                                    UsersRef.child("profileimage").setValue(downloadUrl)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Intent selfIntent = new Intent(CreateProfile.this, CreateProfile.class);
+                                                        startActivity(selfIntent);
+
+                                                        Toast.makeText(CreateProfile.this, "Image Stored Successfully...", Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
+                                                    } else {
+                                                        String message = task.getException().getMessage();
+                                                        Toast.makeText(CreateProfile.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
+                                                    }
+
+                                }
+                            });
+
+                                }
+                            });
                         }
                     }
                 });
-            }
-            else
-            {
-                Toast.makeText(this, "Error Occured:  Try Again.", Toast.LENGTH_SHORT).show();
-                loadingBar.dismiss();
-            }
+
         }
+    }
 
 
 

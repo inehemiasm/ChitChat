@@ -107,11 +107,7 @@ public class CreateProfile extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-
-
-
-    }
+        });}
 
 //        @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data)

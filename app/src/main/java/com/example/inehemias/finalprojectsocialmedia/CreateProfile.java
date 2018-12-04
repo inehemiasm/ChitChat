@@ -109,69 +109,6 @@ public class CreateProfile extends AppCompatActivity {
             }
         });}
 
-//        @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-//    {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null)
-//        {
-//            Uri ImageUri = data.getData();
-//                loadingBar.setTitle("Profile Image");
-//                loadingBar.setMessage("Please wait, while we updating your profile image...");
-//                loadingBar.show();
-//                loadingBar.setCanceledOnTouchOutside(true);
-//
-//           // Uri resultUri = result.getUri();
-//
-////            StorageReference filePath = userProfileImageRef.child(currentUserID + ".jpg");
-////
-//            assert ImageUri != null;
-//            final Uri resultUri = ImageUri;
-//
-//                StorageReference filePath = UserProfileImageRef.child(currentUserID + ".jpg");
-//
-//                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task)
-//
-//                    {
-//                        if(task.isSuccessful())
-//                        {
-//                            Toast.makeText(CreateProfile.this, "Profile Image stored successfully to Firebase storage...", Toast.LENGTH_SHORT).show();
-//
-//                            final String downloadUrl1 = task.getResult().getMetadata().getPath();
-//                            //final String downloadUrl = UserProfileImageRef.getDownloadUrl().toString();
-//                            Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
-//
-//
-//                            UsersRef.child("profileimage").setValue(result)
-//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<Void> task)
-//                                        {
-//                                            if(task.isSuccessful())
-//                                            {
-//                                                Intent selfIntent = new Intent(CreateProfile.this, CreateProfile.class);
-//                                                startActivity(selfIntent);
-//
-//                                                Toast.makeText(CreateProfile.this, "Profile Image stored to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
-//                                                loadingBar.dismiss();
-//                                            }
-//                                            else
-//                                            {
-//                                                String message = task.getException().getMessage();
-//                                                Toast.makeText(CreateProfile.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
-//                                                loadingBar.dismiss();
-//                                            }
-//                                        }
-//                                    });
-//                        }
-//                    }
-//                });
-//            }
-//        }
-
 
 
     @Override

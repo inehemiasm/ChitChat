@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Home");
 
+        AddNewPostButton = (ImageButton) findViewById(R.id.add_post_button);
+
 
         drawerLayout= findViewById(R.id.drawable_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this,drawerLayout, R.string.drawer_open, R.string.drawer_close);
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(dataSnapshot.exists())
                 {
-                    if(dataSnapshot.hasChild("fullname"))
+                    if(dataSnapshot.hasChild("username"))
 
                     {
                         String fullname = dataSnapshot.child("fullname").getValue().toString();
@@ -136,6 +138,15 @@ public class MainActivity extends AppCompatActivity {
 
                 UserMenuSelected(menuItem);
                 return false;
+            }
+        });
+
+
+        AddNewPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SendUserToPostActivity();
             }
         });
     }
@@ -200,10 +211,11 @@ public class MainActivity extends AppCompatActivity {
 
         switch(menuItem.getItemId()){
             case R.id.nav_new_post:
-                SendUserToRegisterActivity();
+                SendUserToPostActivity();
                 break;
 
             case R.id.nav_profile:
+
                 Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -256,8 +268,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void SendUserToPostActivity() {
 
-//        Intent addNewPostIntent = new Intent(MainActivity.this, PostActivity.class);
-//        startActivity(addNewPostIntent);
+        Intent addNewPostIntent = new Intent(MainActivity.this, PostActivity.class);
+        startActivity(addNewPostIntent);
     }
 
 

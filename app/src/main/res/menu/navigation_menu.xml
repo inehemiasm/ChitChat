@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/nav_new_post"
-        android:title="Register"
+        android:title="Add New Post"
     />
     <item
         android:id="@+id/nav_home"

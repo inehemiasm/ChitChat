@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -50,11 +52,16 @@ public class PostActivity extends AppCompatActivity {
 
     private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl, current_user_id;
 
+    private String TAG="post";
+    private static String downloadUrlLink;
+    private  HashMap postsMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        postsMap = new HashMap();
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
@@ -134,7 +141,7 @@ public class PostActivity extends AppCompatActivity {
         postRandomName = saveCurrentDate + saveCurrentTime;
 
 
-        StorageReference filePath = PostsImagesRefrence.child("Post Images").child(ImageUri.getLastPathSegment() + postRandomName + ".jpg");
+        final StorageReference filePath = PostsImagesRefrence.child("Post Images").child(ImageUri.getLastPathSegment() + postRandomName + ".jpg");
 
         filePath.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -143,12 +150,25 @@ public class PostActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
-                    //downloadUrl = task.getResult().getDownloadUrl().toString();
 
-                    downloadUrl = result.toString();
+
+                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            SavingPostInformationToDatabase(uri.toString());
+
+                            downloadUrlLink=uri.toString();
+                            Log.d(TAG,"on success file put "+ downloadUrlLink);
+
+
+                        }
+                    });
+
+                    Log.d(TAG,"on file put after "+ downloadUrlLink);
                     Toast.makeText(PostActivity.this, "image uploaded successfully to Storage...", Toast.LENGTH_SHORT).show();
 
-                    SavingPostInformationToDatabase();
+
 
                 }
                 else
@@ -162,7 +182,7 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
-    private void SavingPostInformationToDatabase() {
+    private void SavingPostInformationToDatabase(final String url) {
 
         UsersRef.child(current_user_id).addValueEventListener(new ValueEventListener() {
             @Override
@@ -173,12 +193,12 @@ public class PostActivity extends AppCompatActivity {
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
                     String userProfileImage = dataSnapshot.child("profileimage").getValue().toString();
 
-                    HashMap postsMap = new HashMap();
+
                     postsMap.put("uid", current_user_id);
                     postsMap.put("date", saveCurrentDate);
                     postsMap.put("time", saveCurrentTime);
                     postsMap.put("description", Description);
-                    postsMap.put("postimage", downloadUrl);
+                    postsMap.put("postimage", url);
                     postsMap.put("profileimage", userProfileImage);
                     postsMap.put("fullname", userFullName);
                     PostsRef.child(current_user_id + postRandomName).updateChildren(postsMap)
@@ -188,6 +208,8 @@ public class PostActivity extends AppCompatActivity {
                                 {
                                     if(task.isSuccessful())
                                     {
+
+                                        Log.d(TAG,"new post  "+ downloadUrlLink);
                                         SendUserToMainActivity();
                                         Toast.makeText(PostActivity.this, "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();

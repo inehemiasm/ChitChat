@@ -11,12 +11,17 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Context;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
 
 
@@ -83,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_view);
 
 
-            postList = (RecyclerView) findViewById(R.id.all_user_post_list);
-//        postList.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setReverseLayout(true);
-//        linearLayoutManager.setStackFromEnd(true);
-//        postList.setLayoutManager(linearLayoutManager);
+        postList = (RecyclerView) findViewById(R.id.all_user_post_list);
+        postList.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        postList.setLayoutManager(linearLayoutManager);
 
         View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
         NavProfileImage = (CircleImageView) navView.findViewById(R.id.nav_profile_image);
@@ -149,7 +156,93 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToPostActivity();
             }
         });
+
+
+        //DisplayAllUsersPosts();
     }
+
+//    private void DisplayAllUsersPosts() {
+//
+//        FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter =
+//                new FirebaseRecyclerAdapter<Posts, PostsViewHolder>
+//                        (
+//                                Posts.class,
+//                                R.layout.display_posts,
+//                                PostsViewHolder.class,
+//                                PostsRef
+//                        )
+//                {
+//                    @NonNull
+//                    @Override
+//                    public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+//                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.display_posts, viewGroup, false);
+//                        PostsViewHolder viewHolder = new PostsViewHolder(view);
+//                        return  viewHolder;
+//
+//                    }
+//
+//                    @Override
+//                    protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull Posts model) {
+//
+//
+//
+//                    }
+//                };
+//        postList.setAdapter(firebaseRecyclerAdapter);
+//
+//
+//    }
+//
+//    public static class PostsViewHolder extends RecyclerView.ViewHolder
+//    {
+//        View mView;
+//
+//        public PostsViewHolder(View itemView)
+//        {
+//            super(itemView);
+//            mView = itemView;
+//        }
+//
+//        public void setFullname(String fullname)
+//        {
+//            TextView username = (TextView) mView.findViewById(R.id.post_username);
+//            username.setText(fullname);
+//        }
+//
+//        public void setProfileimage(Context ctx, String profileimage)
+//        {
+//            CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
+//            Picasso.with(ctx).load(profileimage).into(image);
+//        }
+//
+//        public void setTime(String time)
+//        {
+//            TextView PostTime = (TextView) mView.findViewById(R.id.time);
+//            PostTime.setText("    " + time);
+//        }
+//
+//        public void setDate(String date)
+//        {
+//            TextView PostDate = (TextView) mView.findViewById(R.id.date);
+//            PostDate.setText("    " + date);
+//        }
+//
+//        public void setDescription(String description)
+//        {
+//            TextView PostDescription = (TextView) mView.findViewById(R.id.post_description);
+//            PostDescription.setText(description);
+//        }
+//
+//        public void setPostimage(Context ctx1,  String postimage)
+//        {
+//            ImageView PostImage = (ImageView) mView.findViewById(R.id.post_image_update);
+//
+//            Picasso.with(ctx1).load(postimage).into(PostImage);
+//        }
+//    }
+
+
+
 
     public boolean onOptionsItemSelected(MenuItem item){
         if (actionBarDrawerToggle.onOptionsItemSelected(item)){

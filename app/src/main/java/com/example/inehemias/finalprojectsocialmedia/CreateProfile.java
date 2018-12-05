@@ -134,11 +134,14 @@ public class CreateProfile extends AppCompatActivity {
 
                             Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
 
+                            Log.d(TAG, "Task Uri "+ result.toString());
+
                             result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
 
                                     final String downloadUrl = uri.toString();
+                                    Log.d(TAG, "Task Uri "+ downloadUrl);
 
                                     UsersRef.child("profileimage").setValue(downloadUrl)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -167,9 +170,6 @@ public class CreateProfile extends AppCompatActivity {
 
         }
     }
-
-
-
 
 
     private void SaveAccountSetupInformation()

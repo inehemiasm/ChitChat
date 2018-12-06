@@ -25,16 +25,18 @@
         <FrameLayout
             android:id="@+id/main_container"
             android:layout_width="match_parent"
-            android:layout_height="494dp"
+            android:layout_height="550dp"
             android:layout_alignTop="@+id/main_page_toolbar"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="64dp">
+            android:layout_marginTop="64dp"
+            android:background="@color/common_google_signin_btn_text_dark_focused">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/all_user_post_list"
                 android:layout_width="match_parent"
-                android:layout_height="575dp" />
+                android:layout_height="550dp"
+                android:background="@android:color/background_dark" />
         </FrameLayout>
 
         <ImageButton

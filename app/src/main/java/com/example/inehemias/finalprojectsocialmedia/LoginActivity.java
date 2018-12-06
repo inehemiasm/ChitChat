@@ -23,15 +23,11 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private Button LoginButton;
-    private ImageView googleSignInButton;
     private EditText UserEmail, UserPassword;
     private TextView NeedNewAccountLink;
     private ProgressDialog loadingBar;
 
     private FirebaseAuth mAuth;
-
-    private static final int RC_SIGN_IN = 1;
-    //private GoogleApiClient mGoogleSignInClient;
     private static final String TAG = "LoginActivity";
 
     @Override
@@ -43,31 +39,25 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         LoginButton = findViewById(R.id.login_button);
-        UserEmail =findViewById(R.id.login_email);
-        UserPassword= findViewById(R.id.login_password);
+        UserEmail = findViewById(R.id.login_email);
+        UserPassword = findViewById(R.id.login_password);
         NeedNewAccountLink = findViewById(R.id.create_account);
         loadingBar = new ProgressDialog(this);
-
-
-
-
 
 
     }
 
 
-
-    private void setters(){
+    private void setters() {
 
         LoginButton = findViewById(R.id.login_button);
-        UserEmail =findViewById(R.id.login_email);
-        UserPassword= findViewById(R.id.login_password);
+        UserEmail = findViewById(R.id.login_email);
+        UserPassword = findViewById(R.id.login_password);
         NeedNewAccountLink = findViewById(R.id.create_account);
 
         NeedNewAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 SendUserToRegisterActivity();
             }
         });
@@ -75,8 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 AllowingUserToLogin();
             }
         });
@@ -84,37 +73,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null)
-        {
+        if (currentUser != null) {
             SendUserToMainActivity();
         }
     }
 
 
-    private void AllowingUserToLogin()
-    {
+    private void AllowingUserToLogin() {
         String email = UserEmail.getText().toString();
         String password = UserPassword.getText().toString();
 
-        if(TextUtils.isEmpty(email))
-        {
+        if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please write your email...", Toast.LENGTH_SHORT).show();
-        }
-        else if(TextUtils.isEmpty(password))
-        {
+        } else if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Please write your password...", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             loadingBar.setTitle("Login");
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
@@ -125,8 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    if(task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
 
 
                         SendUserToMainActivity();
@@ -134,9 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
 
-                    }
-                    else
-                    {
+                    } else {
                         String message = task.getException().getMessage();
                         Toast.makeText(LoginActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
@@ -145,12 +121,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
             });
-            }
+        }
     }
 
 
-    private void SendUserToMainActivity()
-    {
+    private void SendUserToMainActivity() {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
@@ -158,19 +133,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-    private void SendUserToLoginActivity()
-    {
-        Intent mainIntent = new Intent(LoginActivity.this, LoginActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(mainIntent);
-        finish();
-    }
-
-
-
-    private void SendUserToRegisterActivity()
-    {
+    private void SendUserToRegisterActivity() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
     }

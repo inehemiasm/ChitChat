@@ -37,7 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CreateProfile extends AppCompatActivity {
     private String TAG = "Profile Activity";
 
-    private EditText UserName, FullName, CountryName;
+    private EditText UserName, FullName, CountryName, Gender;
     private Button save;
     private CircleImageView ProfImage;
     private ProgressDialog loadingBar;
@@ -64,6 +64,7 @@ public class CreateProfile extends AppCompatActivity {
         CountryName = findViewById(R.id.country_text);
         save = findViewById(R.id.save_button);
         ProfImage= findViewById(R.id.set_up_profile_image);
+        Gender = findViewById(R.id.gender);
         ProfImage = (CircleImageView) findViewById(R.id.set_up_profile_image);
         loadingBar = new ProgressDialog(this);
         save.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +142,6 @@ public class CreateProfile extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
 
                                     final String downloadUrl = uri.toString();
-                                    Log.d(TAG, "Task Uri "+ downloadUrl);
 
                                     UsersRef.child("profileimage").setValue(downloadUrl)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -177,6 +177,7 @@ public class CreateProfile extends AppCompatActivity {
         String username = UserName.getText().toString();
         String fullname = FullName.getText().toString();
         String country = CountryName.getText().toString();
+        String gender = Gender.getText().toString();
 
         if(TextUtils.isEmpty(username))
         {
@@ -202,7 +203,7 @@ public class CreateProfile extends AppCompatActivity {
             userMap.put("fullname", fullname);
             userMap.put("country", country);
             userMap.put("status", "Busy");
-            userMap.put("gender", "Male");
+            userMap.put("gender", gender);
             userMap.put("dob", "none");
             userMap.put("relationshipstatus", "none");
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
@@ -218,7 +219,7 @@ public class CreateProfile extends AppCompatActivity {
                     else
                     {
                         String message =  task.getException().getMessage();
-                        Toast.makeText(CreateProfile.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateProfile.this, "Error Occurred: " + message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
                     }
                 }

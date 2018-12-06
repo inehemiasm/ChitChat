@@ -57,7 +57,7 @@
                         android:id="@+id/text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Post Updated"
+                        android:text="Posted on"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="13sp"
                         android:textStyle="bold"/>

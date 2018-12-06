@@ -1,7 +1,7 @@
 package com.example.inehemias.finalprojectsocialmedia;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,19 +30,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.Context;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private RecyclerView recyclerView;
+    FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private Toolbar mToolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private StorageReference Reference;
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference UsersRef, PostsRef;
 
     String currentUserID;
-    private String TAG="Debug";
+    private String TAG="LoadPosts";
 
 
     @Override
@@ -113,14 +111,11 @@ public class MainActivity extends AppCompatActivity {
                     {
                         String fullname = dataSnapshot.child("fullname").getValue().toString();
                         NavProfileUserName.setText(fullname);
-                        Log.d(TAG, "Current user  "  + dataSnapshot.child("fullname").getValue().toString());
 
                     }
                     if(dataSnapshot.hasChild("profileimage"))
                     {
                         String image = dataSnapshot.child("profileimage").getValue().toString();
-
-                        Log.d(TAG, "Current user Image "  + image);
 
                        Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImage);
 
@@ -158,90 +153,76 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //DisplayAllUsersPosts();
+        DisplayAllUsersPosts();
     }
 
-//    private void DisplayAllUsersPosts() {
-//
-//        FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter =
-//                new FirebaseRecyclerAdapter<Posts, PostsViewHolder>
-//                        (
-//                                Posts.class,
-//                                R.layout.display_posts,
-//                                PostsViewHolder.class,
-//                                PostsRef
-//                        )
-//                {
-//                    @NonNull
-//                    @Override
-//                    public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.display_posts, viewGroup, false);
-//                        PostsViewHolder viewHolder = new PostsViewHolder(view);
-//                        return  viewHolder;
-//
-//                    }
-//
-//                    @Override
-//                    protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull Posts model) {
-//
-//
-//
-//                    }
-//                };
-//        postList.setAdapter(firebaseRecyclerAdapter);
-//
-//
-//    }
-//
-//    public static class PostsViewHolder extends RecyclerView.ViewHolder
-//    {
-//        View mView;
-//
-//        public PostsViewHolder(View itemView)
-//        {
-//            super(itemView);
-//            mView = itemView;
-//        }
-//
-//        public void setFullname(String fullname)
-//        {
-//            TextView username = (TextView) mView.findViewById(R.id.post_username);
-//            username.setText(fullname);
-//        }
-//
-//        public void setProfileimage(Context ctx, String profileimage)
-//        {
-//            CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
-//            Picasso.with(ctx).load(profileimage).into(image);
-//        }
-//
-//        public void setTime(String time)
-//        {
-//            TextView PostTime = (TextView) mView.findViewById(R.id.time);
-//            PostTime.setText("    " + time);
-//        }
-//
-//        public void setDate(String date)
-//        {
-//            TextView PostDate = (TextView) mView.findViewById(R.id.date);
-//            PostDate.setText("    " + date);
-//        }
-//
-//        public void setDescription(String description)
-//        {
-//            TextView PostDescription = (TextView) mView.findViewById(R.id.post_description);
-//            PostDescription.setText(description);
-//        }
-//
-//        public void setPostimage(Context ctx1,  String postimage)
-//        {
-//            ImageView PostImage = (ImageView) mView.findViewById(R.id.post_image_update);
-//
-//            Picasso.with(ctx1).load(postimage).into(PostImage);
-//        }
-//    }
+
+    private void DisplayAllUsersPosts()
+    {
+
+        FirebaseRecyclerOptions<Posts> firebaseRecyclerOptions =new FirebaseRecyclerOptions.Builder<Posts>
+                ().setQuery(PostsRef,Posts.class)
+                .build();
+
+         firebaseRecyclerAdapter =new FirebaseRecyclerAdapter<Posts, PostsHolder>(firebaseRecyclerOptions) {
+            @Override
+            protected void onBindViewHolder(@NonNull PostsHolder holder, int position, @NonNull Posts model) {
+
+                holder.setPosts(model);
+
+            }
+
+            @NonNull
+            @Override
+            public PostsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.display_posts,parent,false);
+                return  new PostsHolder(view);
+            }
+        };
+        postList.setAdapter(firebaseRecyclerAdapter);
+
+        Log.d(TAG, String.valueOf(firebaseRecyclerAdapter.getItemCount()));
 
 
+    }
+
+    public static class PostsHolder extends RecyclerView.ViewHolder {
+
+        private CircleImageView profile_image;
+        private ImageView post_image;
+        private TextView Description;
+        private TextView Date,Time, Has_Updated_Post,Has_Username;
+
+
+        public PostsHolder(View itemView) {
+            super(itemView);
+
+            Date=itemView.findViewById(R.id.date);
+            Time=itemView.findViewById(R.id.time);
+            Has_Username=itemView.findViewById(R.id.post_username);
+            Description=itemView.findViewById(R.id.post_description);
+            profile_image=itemView.findViewById(R.id.post_profile_image);
+            post_image=itemView.findViewById(R.id.post_image_update);
+        }
+
+        public  void setPosts(Posts posts){
+
+            String users_name=posts.getFullname();
+            Has_Username.setText(users_name);
+            String users_description=posts.getDescription();
+            Description.setText(users_description);
+            String users_date=posts.getDate();
+            Date.setText(" " +users_date+ " ");
+            String users_time=posts.getTime();
+            Time.setText(" " +users_time+ " ");
+            String users_image=posts.getProfileimage();
+            Picasso.with(itemView.getContext()).load(users_image).into(profile_image);
+            String users_posts_image=posts.getPostimage();
+            Picasso.with(itemView.getContext()).load(users_posts_image).into(post_image);
+
+
+
+        }}
 
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -253,18 +234,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
         protected void onStart() {
-            super.onStart();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-            if(currentUser == null)
-            {
-                SendUserToLoginActivity();
-            }
-        else
-        {
+        if (currentUser == null) {
+            SendUserToLoginActivity();
+        } else {
             CheckUserExistence();
+            firebaseRecyclerAdapter.startListening();
+
         }
+
+
     }
+
+
+
+
+
 
     private void CheckUserExistence() {
 
@@ -364,9 +351,6 @@ public class MainActivity extends AppCompatActivity {
         Intent addNewPostIntent = new Intent(MainActivity.this, PostActivity.class);
         startActivity(addNewPostIntent);
     }
-
-
-
 
 
 

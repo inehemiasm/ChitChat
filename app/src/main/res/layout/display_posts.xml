@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            android:padding="5dp"
+            android:padding="1dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -95,17 +95,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
-            android:padding="3dp"
+            android:gravity="center_horizontal"
+            android:padding="1dp"
             android:text="Post Description"
             android:textColor="@color/common_google_signin_btn_text_dark_default"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/post_image_update"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:adjustViewBounds="true"
-            android:layout_margin="3dp"
+            android:layout_margin="1dp"
             android:scaleType="centerCrop"/>
     </LinearLayout>
 </RelativeLayout>

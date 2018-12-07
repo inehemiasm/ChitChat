@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".PostActivity">
 
     <include
@@ -35,6 +36,7 @@
         android:layout_marginTop="326dp"
         android:ems="10"
         android:hint="Description"
+        android:drawableLeft="@drawable/ic_description_black_24dp"
         android:inputType="textMultiLine" />
 
     <Button

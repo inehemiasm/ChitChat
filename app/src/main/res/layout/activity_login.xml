@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     tools:context=".LoginActivity">
 
 
@@ -36,12 +37,12 @@
 
     <EditText
         android:id="@+id/login_password"
-        android:layout_width="378dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/login_email"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="-1dp"
+        android:layout_marginTop="-2dp"
         android:background="@drawable/inputs"
         android:drawableLeft="@drawable/password"
         android:ems="10"
@@ -73,7 +74,7 @@
         android:layout_marginBottom="220dp"
         android:gravity="center_vertical|center_horizontal"
         android:shadowColor="@color/colorPrimary"
-        android:text="Don't have an Account?"
+        android:text="Don't have an Account? Sign Up"
         android:textColor="@color/colorPrimaryDark" />
 
 

@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton AddNewPostButton;
     private RecyclerView postList;
 
-    public static final String STORAGE_REFERENCE = "gs://finalprojectsocialmedia.appspot.com/";
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
 
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         st = FirebaseStorage.getInstance();
-        Reference = st.getReferenceFromUrl(STORAGE_REFERENCE);
 
 
         mAuth = FirebaseAuth.getInstance();

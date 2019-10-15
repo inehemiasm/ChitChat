@@ -50,7 +50,7 @@ public class PostActivity extends AppCompatActivity {
     private DatabaseReference UsersRef, PostsRef;
     private FirebaseAuth mAuth;
 
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl, current_user_id;
+    private String saveCurrentDate, saveCurrentTime, postRandomName, current_user_id;
 
     private String TAG="post";
     private static String downloadUrlLink;
@@ -107,16 +107,13 @@ public class PostActivity extends AppCompatActivity {
 
         Description = PostDescription.getText().toString();
 
-        if(ImageUri == null)
-        {
+        if(ImageUri == null) {
             Toast.makeText(this, "Please select post image...", Toast.LENGTH_SHORT).show();
         }
-        else if(TextUtils.isEmpty(Description))
-        {
+        else if(TextUtils.isEmpty(Description)) {
             Toast.makeText(this, "Please say something about your image...", Toast.LENGTH_SHORT).show();
         }
-        else
-        {
+        else {
             loadingBar.setTitle("Add New Post");
             loadingBar.setMessage("Please wait, while we are updating your new post...");
             loadingBar.show();
@@ -124,9 +121,6 @@ public class PostActivity extends AppCompatActivity {
 
             StoringImageToFirebaseStorage();
         }
-
-
-
     }
 
     private void StoringImageToFirebaseStorage() {
@@ -134,7 +128,6 @@ public class PostActivity extends AppCompatActivity {
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrentDate = currentDate.format(calFordDate.getTime());
 
-        Calendar calFordTime = Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
         saveCurrentTime = currentTime.format(calFordDate.getTime());
 
@@ -150,26 +143,17 @@ public class PostActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
-
-
                     result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-
                             SavingPostInformationToDatabase(uri.toString());
-
                             downloadUrlLink=uri.toString();
                             Log.d(TAG,"on success file put "+ downloadUrlLink);
-
-
                         }
                     });
 
                     Log.d(TAG,"on file put after "+ downloadUrlLink);
                     Toast.makeText(PostActivity.this, "image uploaded successfully to Storage...", Toast.LENGTH_SHORT).show();
-
-
-
                 }
                 else
                 {
@@ -178,8 +162,6 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     private void SavingPostInformationToDatabase(final String url) {
@@ -192,8 +174,7 @@ public class PostActivity extends AppCompatActivity {
                 {
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
                     String userProfileImage = dataSnapshot.child("profileimage").getValue().toString();
-
-
+                    //Adding objects to map to be push to Firebase
                     postsMap.put("uid", current_user_id);
                     postsMap.put("date", saveCurrentDate);
                     postsMap.put("time", saveCurrentTime);
@@ -208,7 +189,6 @@ public class PostActivity extends AppCompatActivity {
                                 {
                                     if(task.isSuccessful())
                                     {
-
                                         Log.d(TAG,"new post  "+ downloadUrlLink);
                                         SendUserToMainActivity();
                                         Toast.makeText(PostActivity.this, "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
@@ -216,7 +196,7 @@ public class PostActivity extends AppCompatActivity {
                                     }
                                     else
                                     {
-                                        Toast.makeText(PostActivity.this, "Error Occured while updating your post.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(PostActivity.this, "Error Occurred while updating your post.", Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                     }
                                 }
@@ -226,18 +206,14 @@ public class PostActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
+                }
         });
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null)
         {
             ImageUri = data.getData();
@@ -245,22 +221,15 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
-
         if(id == android.R.id.home)
-        {
             SendUserToMainActivity();
-        }
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     private void SendUserToMainActivity()
     {
@@ -269,14 +238,9 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void OpenGallery() {
-
         Intent galleryIntent = new Intent();
         galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, Gallery_Pick);
-
-
     }
-
-
 }

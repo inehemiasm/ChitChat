@@ -1,7 +1,6 @@
 package com.example.inehemias.finalprojectsocialmedia;
 
-public class Posts
-{
+public class Posts {
     public String uid, time, date, postimage, description, profileimage, fullname;
 
     public Posts()

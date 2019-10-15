@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -55,7 +54,6 @@ public class CreateProfile extends AppCompatActivity {
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
-
         UserName = findViewById(R.id.username);
         FullName = findViewById(R.id.full_name);
         CountryName = findViewById(R.id.country_text);
@@ -115,8 +113,6 @@ public class CreateProfile extends AppCompatActivity {
 
         if(requestCode == Gallery_Pick && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-
-
                 loadingBar.setTitle("Profile Image");
                 loadingBar.setMessage("Please Wait...");
                 loadingBar.show();
@@ -155,8 +151,7 @@ public class CreateProfile extends AppCompatActivity {
                                                         Toast.makeText(CreateProfile.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                                                         loadingBar.dismiss();
                                                     }
-
-                                }
+                                                    }
                             });
 
                                 }
@@ -164,7 +159,6 @@ public class CreateProfile extends AppCompatActivity {
                         }
                     }
                 });
-
         }
     }
 
@@ -176,20 +170,16 @@ public class CreateProfile extends AppCompatActivity {
         String country = CountryName.getText().toString();
         String gender = Gender.getText().toString();
 
-        if(TextUtils.isEmpty(username))
-        {
+        if(TextUtils.isEmpty(username)) {
             Toast.makeText(this, "Please write your username...", Toast.LENGTH_SHORT).show();
         }
-        if(TextUtils.isEmpty(fullname))
-        {
+        if(TextUtils.isEmpty(fullname)) {
             Toast.makeText(this, "Please write your full name...", Toast.LENGTH_SHORT).show();
         }
-        if(TextUtils.isEmpty(country))
-        {
+        if(TextUtils.isEmpty(country)) {
             Toast.makeText(this, "Please write your country...", Toast.LENGTH_SHORT).show();
         }
-        else
-        {
+        else {
             loadingBar.setTitle("Saving Information");
             loadingBar.setMessage("Please wait, Creating Account...");
             loadingBar.show();
@@ -224,8 +214,6 @@ public class CreateProfile extends AppCompatActivity {
         }
     }
 
-
-
     private void SendUserToMainActivity()
     {
         Intent mainIntent = new Intent(CreateProfile.this, MainActivity.class);
@@ -233,7 +221,4 @@ public class CreateProfile extends AppCompatActivity {
         startActivity(mainIntent);
         finish();
     }
-
-
-
 }

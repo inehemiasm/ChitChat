@@ -43,10 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         UserPassword = findViewById(R.id.login_password);
         NeedNewAccountLink = findViewById(R.id.create_account);
         loadingBar = new ProgressDialog(this);
-
-
     }
-
 
     private void setters() {
 
@@ -54,15 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         UserEmail = findViewById(R.id.login_email);
         UserPassword = findViewById(R.id.login_password);
         NeedNewAccountLink = findViewById(R.id.create_account);
-
         NeedNewAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SendUserToRegisterActivity();
             }
         });
-
-
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,18 +66,14 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
         if (currentUser != null) {
             SendUserToMainActivity();
         }
     }
-
 
     private void AllowingUserToLogin() {
         String email = UserEmail.getText().toString();
@@ -98,15 +88,10 @@ public class LoginActivity extends AppCompatActivity {
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
-
-
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-
                     if (task.isSuccessful()) {
-
-
                         SendUserToMainActivity();
 
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
@@ -116,14 +101,12 @@ public class LoginActivity extends AppCompatActivity {
                         String message = task.getException().getMessage();
                         Toast.makeText(LoginActivity.this, "Error occured: " + message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
-
-                    }
+                        }
 
                 }
             });
         }
     }
-
 
     private void SendUserToMainActivity() {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
@@ -132,10 +115,8 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-
     private void SendUserToRegisterActivity() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
     }
-
 }

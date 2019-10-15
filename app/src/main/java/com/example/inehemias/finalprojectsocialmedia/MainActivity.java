@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,26 +29,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
 public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private Toolbar mToolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private StorageReference Reference;
-    private FirebaseStorage st;
-
     private CircleImageView NavProfileImage;
     private TextView NavProfileUserName;
     private ImageButton AddNewPostButton;
     private RecyclerView postList;
-
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
 
@@ -61,67 +53,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        st = FirebaseStorage.getInstance();
-
-
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-
-
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Home");
-
         AddNewPostButton = (ImageButton) findViewById(R.id.add_post_button);
-
-
         drawerLayout = findViewById(R.id.drawable_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navigationView = findViewById(R.id.navigation_view);
-
-
         postList = (RecyclerView) findViewById(R.id.all_user_post_list);
         postList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         postList.setLayoutManager(linearLayoutManager);
-
         View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
         NavProfileImage = (CircleImageView) navView.findViewById(R.id.nav_profile_image);
         NavProfileUserName = (TextView) navView.findViewById(R.id.nav_user_name);
-
 
         UsersRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    if (dataSnapshot.hasChild("username"))
-
-                    {
+                    if (dataSnapshot.hasChild("username")) {
                         String fullname = dataSnapshot.child("fullname").getValue().toString();
                         NavProfileUserName.setText(fullname);
-
                     }
                     if (dataSnapshot.hasChild("profileimage")) {
                         String image = dataSnapshot.child("profileimage").getValue().toString();
-
                         Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImage);
-
-                    } else {
+                        } else {
                         Toast.makeText(MainActivity.this, "Profile name do not exists...", Toast.LENGTH_SHORT).show();
                     }
                 } }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
+                }
         });
 
 
@@ -211,15 +185,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             CheckUserExistence();
             firebaseRecyclerAdapter.startListening();
-
         }
-
-
     }
 
-
     private void CheckUserExistence() {
-
         final String current_user_id = mAuth.getCurrentUser().getUid();
 
         UsersRef.addValueEventListener(new ValueEventListener() {
@@ -228,28 +197,21 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!dataSnapshot.hasChild(current_user_id)) {
                     SendUserToSetupActivity();
-                }
-
-            }
+                } }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
-
     }
 
     private void SendUserToSetupActivity() {
-
         Intent setupIntent = new Intent(MainActivity.this, CreateProfile.class);
         setupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(setupIntent);
         finish();
-
-    }
-
+        }
 
     private void UserMenuSelected(MenuItem menuItem) {
 
@@ -289,30 +251,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Logout Success!", Toast.LENGTH_SHORT).show();
                 SendUserToLoginActivity();
                 break;
-
-        }
+                }
 
     }
 
     private void SendUserToLoginActivity() {
-
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(loginIntent);
         finish();
-
-
     }
 
-    private void SendUserToRegisterActivity() {
-        Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-        startActivity(intent);
-
-
-    }
 
     private void SendUserToPostActivity() {
-
         Intent addNewPostIntent = new Intent(MainActivity.this, PostActivity.class);
         startActivity(addNewPostIntent);
     }

@@ -22,9 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button LoginButton;
     private EditText UserEmail, UserPassword;
-    private TextView NeedNewAccountLink;
     private ProgressDialog loadingBar;
 
     private FirebaseAuth mAuth;
@@ -38,26 +36,22 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        LoginButton = findViewById(R.id.login_button);
-        UserEmail = findViewById(R.id.login_email);
-        UserPassword = findViewById(R.id.login_password);
-        NeedNewAccountLink = findViewById(R.id.create_account);
         loadingBar = new ProgressDialog(this);
     }
 
     private void setters() {
 
-        LoginButton = findViewById(R.id.login_button);
-        UserEmail = findViewById(R.id.login_email);
-        UserPassword = findViewById(R.id.login_password);
-        NeedNewAccountLink = findViewById(R.id.create_account);
-        NeedNewAccountLink.setOnClickListener(new View.OnClickListener() {
+        Button loginButton = findViewById(R.id.btn_login);
+        UserEmail = findViewById(R.id.input_email);
+        UserPassword = findViewById(R.id.input_password);
+        TextView needNewAccountLink = findViewById(R.id.link_signup);
+        needNewAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SendUserToRegisterActivity();
             }
         });
-        LoginButton.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AllowingUserToLogin();
